@@ -1,16 +1,14 @@
-import { jwtVerify } from "jose";
-
-const secret = new TextEncoder().encode("khopaditodsalleka69");
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const token = await req.cookies.get("token")?.value;
-  console.log("token-------->", token);
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    console.log("Verified payload --->", payload);
-    return Response.json(payload);
-  } catch (err) {
-    console.log("JWT verification failed:", err.message);
+  if (!token) {
+    console.log("No token found");
+    return NextResponse.json({ message: "No token found" }, { status: 401 });
   }
+
+  console.log("Verified token:", token);
+  return NextResponse.json(token);
 }

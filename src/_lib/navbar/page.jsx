@@ -6,22 +6,44 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "@/context/CartContext";
+import { signOut } from "next-auth/react";
 
 function Page() {
   const { cartCount, logedUserName } = useCart();
   const router = useRouter();
 
+  // const handleLogout = async () => {
+  //   try {
+  //     await axios.post("/api/logout");
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "Logged Out!",
+  //       text: "You've been logged out. Come back soon!",
+  //     });
+  //     router.push("/login");
+  //   } catch (err) {
+  //     console.error("Logout failed", err);
+  //   }
+  // };
+
   const handleLogout = async () => {
     try {
-      await axios.post("/api/logout");
+      await signOut({
+        redirect: false, // If you don't want to automatically redirect
+      });
       Swal.fire({
         icon: "warning",
         title: "Logged Out!",
         text: "You've been logged out. Come back soon!",
       });
-      router.push("/login");
-    } catch (err) {
-      console.error("Logout failed", err);
+      router.push("/login"); // Redirect the user to the login page after logging out
+    } catch (error) {
+      console.error("Logout failed", error);
+      Swal.fire({
+        icon: "error",
+        title: "Logout Failed",
+        text: "An error occurred while logging out.",
+      });
     }
   };
 
@@ -62,7 +84,12 @@ function Page() {
           </div>
         </div>
         <div>
-          <h1 className="text-indigo-400 cursor-pointer">Welcom <span className="font-bold text-xl hover:text-indigo-500">{logedUserName}</span></h1>
+          <h1 className="text-indigo-400 cursor-pointer">
+            Welcom{" "}
+            <span className="font-bold text-xl hover:text-indigo-500">
+              {logedUserName}
+            </span>
+          </h1>
         </div>
 
         {/* Right side: Profile + Cart + Logout */}

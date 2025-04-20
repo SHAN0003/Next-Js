@@ -5,6 +5,7 @@ import Navbar from "../_lib/navbar/page.jsx";
 import Footer from "../_lib/footer/page.jsx";
 import { usePathname } from "next/navigation";
 import { CartProvider } from "@/context/CartContext";
+import { SessionProvider } from "next-auth/react";
 
 // export const metadata = {
 //   title: "Next.js",
@@ -23,11 +24,13 @@ export default function RootLayout({ children }) {
     <>
       <html lang="en">
         <body>
+        <SessionProvider>
           <CartProvider>
             <Navbar />
             {children}
             <Footer />
           </CartProvider>
+          </SessionProvider>
         </body>
       </html>
     </>
